@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bitvaultassets || Dashboard</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    />
+    <link rel="stylesheet" href="./style.css" />
+    <style>
+      .sidebar {
+        height: 100%;
+        width: 300px;
+        position: fixed;
+        top: 0;
+        right: -300px;
+        background-color: rgb(5, 5, 5);
+        overflow-x: hidden;
+        transition: 0.5s;
+        padding-top: 20px;
+        color: #ffffff;
+      }
+      .sidebar .sidebar-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 15px;
+      }
+      .sidebar .sidebar-header .closebtn {
+        font-size: 25px;
+        cursor: pointer;
+      }
+      .sidebar ul {
+        list-style-type: none;
+        padding: 0;
+      }
+      .sidebar ul li {
+        padding: 10px 15px;
+        text-decoration: none;
+        font-size: 18px;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        transition: 0.3s;
+      }
+      .sidebar ul li i {
+        margin-right: 10px;
+      }
+      .sidebar ul li a {
+        color: inherit;
+        text-decoration: none;
+        width: 100%;
+      }
+      .sidebar ul li:hover {
+        background-color: #575757;
+      }
+    </style>
+    <style>
+      .price {
+        font-size: 1.5em;
+      }
+      .price.up {
+        color: green;
+      }
+      .price.down {
+        color: red;
+      }
+      .percentage-change {
+        font-size: 1em;
+      }
+      .percentage-change.up {
+        color: green;
+      }
+      .percentage-change.down {
+        color: red;
+      }
+      .loader {
+        border: 16px solid #f3f3f3;
+        border-radius: 50%;
+        border-top: 16px solid #3498db;
+        width: 100px;
+        height: 100px;
+        animation: spin 2s linear infinite;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .popup {
+        display: none;
+        position: fixed;
+        top: 20%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: white;
+        padding: 20px;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        z-index: 1000;
+      }
+      .popup.show {
+        display: block;
+      }
+    </style>
+
+    <meta http-equiv="refresh" content="200" />
+  </head>
+  <body style="background-color: rgb(235, 227, 217)">
+    <header
+      style="
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      "
+    >
+      <br />
+      <nav style="display: flex; justify-content: space-between; width: 91%">
+        <div style="display: flex; align-items: center; gap: 0.7rem">
+          <img
+            src="./dummie.jpeg"
+            alt=""
+            width="34"
+            style="border-radius: 50px"
+          />
+          <h6>Hi, Marcel</h6>
+        </div>
+        <div style="display: flex; justify-content: space-around; gap: 1rem">
+          <i onclick="window.location.href='./logout';">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              class="bi bi-power text-danger"
+              viewBox="0 0 16 16"
+            >
+              <path d="M7.5 1v7h1V1z" />
+              <path
+                d="M3 8.812a5 5 0 0 1 2.578-4.375l-.485-.874A6 6 0 1 0 11 3.616l-.501.865A5 5 0 1 1 3 8.812"
+              />
+            </svg>
+          </i>
+          <i>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              class="bi bi-bell"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2M8 1.918l-.797.161A4 4 0 0 0 4 6c0 .628-.134 2.197-.459 3.742-.16.767-.376 1.566-.663 2.258h10.244c-.287-.692-.502-1.49-.663-2.258C12.134 8.197 12 6.628 12 6a4 4 0 0 0-3.203-3.92zM14.22 12c.223.447.481.801.78 1H1c.299-.199.557-.553.78-1C2.68 10.2 3 6.88 3 6c0-2.42 1.72-4.44 4.005-4.901a1 1 0 1 1 1.99 0A5 5 0 0 1 13 6c0 .88.32 4.2 1.22 6"
+              />
+            </svg>
+          </i>
+          <i class="openbtn" onclick="openNav()">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              class="bi bi-three-dots-vertical"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"
+              />
+            </svg>
+          </i>
+        </div>
+      </nav>
+      <br />
+      <div
+        class="alert alert-warning"
+        style="width: 91%; display: flex; border-radius: 50px"
+      >
+        <span style="padding: 0px 5px">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            fill="currentColor"
+            class="bi bi-megaphone"
+            viewBox="0 0 16 16"
+          >
+            <path
+              d="M13 2.5a1.5 1.5 0 0 1 3 0v11a1.5 1.5 0 0 1-3 0v-.214c-2.162-1.241-4.49-1.843-6.912-2.083l.405 2.712A1 1 0 0 1 5.51 15.1h-.548a1 1 0 0 1-.916-.599l-1.85-3.49-.202-.003A2.014 2.014 0 0 1 0 9V7a2.02 2.02 0 0 1 1.992-2.013 75 75 0 0 0 2.483-.075c3.043-.154 6.148-.849 8.525-2.199zm1 0v11a.5.5 0 0 0 1 0v-11a.5.5 0 0 0-1 0m-1 1.35c-2.344 1.205-5.209 1.842-8 2.033v4.233q.27.015.537.036c2.568.189 5.093.744 7.463 1.993zm-9 6.215v-4.13a95 95 0 0 1-1.992.052A1.02 1.02 0 0 0 1 7v2c0 .55.448 1.002 1.006 1.009A61 61 0 0 1 4 10.065m-.657.975 1.609 3.037.01.024h.548l-.002-.014-.443-2.966a68 68 0 0 0-1.722-.082z"
+            />
+          </svg>
+        </span>
+        <marquee behavior="" direction="left"
+          >Welcome To Bitvaultassets User Dashboad</marquee
+        >
+        <span style="padding: 0px 5px">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            fill="currentColor"
+            class="bi bi-arrow-90deg-left"
+            viewBox="0 0 16 16"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M1.146 4.854a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 4H12.5A2.5 2.5 0 0 1 15 6.5v8a.5.5 0 0 1-1 0v-8A1.5 1.5 0 0 0 12.5 5H2.707l3.147 3.146a.5.5 0 1 1-.708.708z"
+            />
+          </svg>
+        </span>
+      </div>
+    </header>
+    <div id="mySidebar" class="sidebar">
+      <div class="sidebar-header">
+        <span style="font-weight: 700">Settings</span>
+        <i class="fa fa-arrow-right closebtn" onclick="closeNav()"></i>
+      </div>
+      <ul>
+        <li>
+          <a href="#"
+            ><i class="fa fa-wallet"></i> Wallets
+            <span class="small-text">Multi-Coin Wallet 1</span></a
+          >
+        </li>
+        <li onclick="window.location.href='address';">
+          <a href="#"><i class="fa fa-address-book"></i> Address Book</a>
+        </li>
+        <li onclick="window.location.href='scan';">
+          <a href="#"><i class="fa fa-qrcode"></i> Scan QR code</a>
+        </li>
+        <li onclick="window.location.href='';">
+          <a href="#"><i class="fa fa-wallet"></i> WalletConnect</a>
+        </li>
+        <li onclick="window.location.href='change-pass';">
+          <a href="#"><i class="fa fa-lock"></i> Security</a>
+        </li>
+        <li onclick="window.location.href='';">
+          <a href="#"><i class="fa fa-bell"></i> Notifications</a>
+        </li>
+        <li onclick="window.location.href='support';">
+          <a href="#"><i class="fa fa-headset"></i> Support</a>
+        </li>
+        <li onclick="window.location.href='support';">
+          <a href="#"><i class="fab fa-whatsapp"></i> Whatsapp</a>
+        </li>
+        <li onclick="window.location.href='support';">
+          <a href="#"><i class="fab fa-telegram"></i> Telegram</a>
+        </li>
+      </ul>
+    </div>
+
+    <section
+      style="
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        width: 100%;
+        color: white;
+      "
+    >
+      <div
+        style="
+          background-color: rgb(92, 9, 226);
+          width: 91%;
+          border-radius: 10px;
+          display: flex;
+          justify-content: space-between;
+          padding: 15px;
+          flex-direction: column;
+        "
+      >
+        <div style="display: flex; flex-direction: column">
+          <small style="display: flex; gap: 0.4rem">
+            <p>Available Balance</p>
+            <i id="toggleBalanceIcon" style="font-weight: 900; cursor: pointer">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="currentColor"
+                class="bi bi-eye"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z"
+                />
+                <path
+                  d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0"
+                />
+              </svg>
+            </i>
+          </small>
+          <small>
+            <h6
+              id="totalWalletBalanceHide"
+              style="font-weight: 900; font-size: 25px; display: none"
+            >
+              ****
+            </h6>
+            <h6
+              id="totalWalletBalance"
+              style="font-weight: 900; font-size: 25px"
+            >
+              $0.00
+            </h6>
+          </small>
+        </div>
+
+        <div
+          style="
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            gap: 0.4rem;
+          "
+        >
+          <span
+            onclick="window.location.href='send.php';"
+            style="
+              display: flex;
+              flex-direction: column;
+              justify-content: center;
+              align-items: center;
+              gap: 0.6rem;
+              box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+              border-radius: 10px;
+              padding: 18px;
+            "
+          >
+            <i>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="currentColor"
+                class="bi bi-box-arrow-up"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M3.5 6a.5.5 0 0 0-.5.5v8a.5.5 0 0 0 .5.5h9a.5.5 0 0 0 .5-.5v-8a.5.5 0 0 0-.5-.5h-2a.5.5 0 0 1 0-1h2A1.5 1.5 0 0 1 14 6.5v8a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 14.5v-8A1.5 1.5 0 0 1 3.5 5h2a.5.5 0 0 1 0 1z"
+                />
+                <path
+                  fill-rule="evenodd"
+                  d="M7.646.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 1.707V10.5a.5.5 0 0 1-1 0V1.707L5.354 3.854a.5.5 0 1 1-.708-.708z"
+                />
+              </svg>
+            </i>
+            <small> Send </small>
+          </span>
+
+          <span
+            onclick="window.location.href='receive.php';"
+            style="
+              display: flex;
+              flex-direction: column;
+              justify-content: center;
+              align-items: center;
+              gap: 0.6rem;
+              box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+              border-radius: 10px;
+              padding: 12px;
+            "
+          >
+            <i>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="currentColor"
+                class="bi bi-box-arrow-in-down"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M3.5 6a.5.5 0 0 0-.5.5v8a.5.5 0 0 0 .5.5h9a.5.5 0 0 0 .5-.5v-8a.5.5 0 0 0-.5-.5h-2a.5.5 0 0 1 0-1h2A1.5 1.5 0 0 1 14 6.5v8a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 14.5v-8A1.5 1.5 0 0 1 3.5 5h2a.5.5 0 0 1 0 1z"
+                />
+                <path
+                  fill-rule="evenodd"
+                  d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z"
+                />
+              </svg>
+            </i>
+            <small> Receive </small>
+          </span>
+
+          <span
+            id="swapButton"
+            style="
+              display: flex;
+              flex-direction: column;
+              justify-content: center;
+              align-items: center;
+              gap: 0.6rem;
+              box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+              border-radius: 10px;
+              padding: 17px;
+            "
+          >
+            <i>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="currentColor"
+                class="bi bi-arrow-repeat"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41m-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9"
+                />
+                <path
+                  fill-rule="evenodd"
+                  d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5 5 0 0 0 8 3M3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9z"
+                />
+              </svg>
+            </i>
+            <small> Swap </small>
+          </span>
+
+          <a
+            href="https://www.moonpay.com"
+            target="_blank"
+            style="
+              display: flex;
+              color: white;
+              flex-direction: column;
+              justify-content: center;
+              align-items: center;
+              gap: 0.6rem;
+              box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+              border-radius: 10px;
+              padding: 20px;
+            "
+          >
+            <i>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="currentColor"
+                class="bi bi-bank"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="m8 0 6.61 3h.89a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.5.5H15v7a.5.5 0 0 1 .485.38l.5 2a.498.498 0 0 1-.485.62H.5a.498.498 0 0 1-.485-.62l.5-2A.5.5 0 0 1 1 13V6H.5a.5.5 0 0 1-.5-.5v-2A.5.5 0 0 1 .5 3h.89zM3.777 3h8.447L8 1zM2 6v7h1V6zm2 0v7h2.5V6zm3.5 0v7h1V6zm2 0v7H12V6zM13 6v7h1V6zm2-1V4H1v1zm-.39 9H1.39l-.25 1h13.72z"
+                />
+              </svg>
+            </i>
+            <small> Buy </small>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <br />
+
+    <div class="container" style="background-color: rgb(235, 227, 217)">
+      <ul
+        class="nav nav-tabs"
+        id="myTab"
+        role="tablist"
+        style="display: flex; justify-content: space-around"
+      >
+        <li class="nav-item">
+          <a
+            class="nav-link active"
+            id="home-tab"
+            data-toggle="tab"
+            href="#home"
+            role="tab"
+            aria-controls="home"
+            aria-selected="true"
+            >Crypto</a
+          >
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link"
+            id="profile-tab"
+            data-toggle="tab"
+            href="#profile"
+            role="tab"
+            aria-controls="profile"
+            aria-selected="false"
+            >NFT</a
+          >
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link"
+            id="contact-tab"
+            data-toggle="tab"
+            href="#contact"
+            role="tab"
+            aria-controls="contact"
+            aria-selected="false"
+            >Activity</a
+          >
+        </li>
+      </ul>
+      <center style="margin-top: 15px; margin-bottom: 15px">
+        <a
+          class="btn btn-outline-primary"
+          href="https://www.moonpay.com"
+          target="_blank"
+        >
+          Buy crypto at cheaper rate</a
+        >
+      </center>
+
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="home"
+          role="tabpanel"
+          aria-labelledby="home-tab"
+        >
+          <div id="loader" class="loader"></div>
+          <section
+            id="content"
+            style="
+              display: none;
+              flex-direction: column;
+              justify-content: space-around;
+              align-items: center;
+              width: 100%;
+              gap: 0.6rem;
+            "
+          >
+            <a
+              class="check"
+              onclick="window.location.href='coins/btc';"
+              style="
+                background-color: ghostwhite;
+                color: black;
+                width: 100%;
+                border-radius: 10px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 7px;
+                padding-bottom: 0%;
+                text-decoration: none;
+              "
+            >
+              <div style="display: flex; flex-direction: row; gap: 0.4rem">
+                <img src="../img/btc.png" alt="" width="40" height="40" />
+                <p style="display: flex; flex-direction: column">
+                  <small style="font-weight: 900"
+                    >BTC
+                    <small
+                      style="padding: 0px 4px; background-color: beige"
+                    ></small
+                  ></small>
+                  <small
+                    >$69,883.00
+                    <span id="bitcoinChange24h" class="percentage-change up"
+                      >1.48%</span
+                    ></small
+                  >
+                </p>
+              </div>
+              <div
+                style="display: flex; flex-direction: column; align-items: end"
+              >
+                <small id="wallet_bal">$0.00</small>
+                <small> 0 BTC</small>
+              </div>
+            </a>
+            <a
+              class="check"
+              onclick="window.location.href='coins/eth';"
+              style="
+                background-color: ghostwhite;
+                color: black;
+                width: 100%;
+                border-radius: 10px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 7px;
+                padding-bottom: 0%;
+                text-decoration: none;
+              "
+            >
+              <div style="display: flex; flex-direction: row; gap: 0.4rem">
+                <img src="../img/eth.png" alt="" width="40" height="40" />
+                <p style="display: flex; flex-direction: column">
+                  <small style="font-weight: 900"
+                    >ETH
+                    <small
+                      style="padding: 0px 4px; background-color: beige"
+                    ></small
+                  ></small>
+                  <small
+                    >$3,912.75
+                    <span id="ethereumChange24h" class="percentage-change up"
+                      >1.38%</span
+                    ></small
+                  >
+                </p>
+              </div>
+              <div
+                style="display: flex; flex-direction: column; align-items: end"
+              >
+                <small id="wallet_bal">$0.00</small>
+                <small> 0 ETH</small>
+              </div>
+            </a>
+            <a
+              class="check"
+              onclick="window.location.href='coins/tron';"
+              style="
+                background-color: ghostwhite;
+                color: black;
+                width: 100%;
+                border-radius: 10px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 7px;
+                padding-bottom: 0%;
+                text-decoration: none;
+              "
+            >
+              <div style="display: flex; flex-direction: row; gap: 0.4rem">
+                <img src="../img/tron.png" alt="" width="40" height="40" />
+                <p style="display: flex; flex-direction: column">
+                  <small style="font-weight: 900"
+                    >TRX
+                    <small
+                      style="padding: 0px 4px; background-color: beige"
+                    ></small
+                  ></small>
+                  <small
+                    >$0.11
+                    <span id="tronChange24h" class="percentage-change down"
+                      >-1.17%</span
+                    ></small
+                  >
+                </p>
+              </div>
+              <div
+                style="display: flex; flex-direction: column; align-items: end"
+              >
+                <small id="wallet_bal">$0.00</small>
+                <small> 0 TRX</small>
+              </div>
+            </a>
+            <a
+              class="check"
+              onclick="window.location.href='coins/usdttrc';"
+              style="
+                background-color: ghostwhite;
+                color: black;
+                width: 100%;
+                border-radius: 10px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 7px;
+                padding-bottom: 0%;
+                text-decoration: none;
+              "
+            >
+              <div style="display: flex; flex-direction: row; gap: 0.4rem">
+                <img src="../img/usdt.png" alt="" width="40" height="40" />
+                <p style="display: flex; flex-direction: column">
+                  <small style="font-weight: 900"
+                    >USDT
+                    <small style="padding: 0px 4px; background-color: beige"
+                      >Tron</small
+                    ></small
+                  >
+                  <small
+                    >$1.00
+                    <span id="tetherChange24h" class="percentage-change down"
+                      >-0.04%</span
+                    ></small
+                  >
+                </p>
+              </div>
+              <div
+                style="display: flex; flex-direction: column; align-items: end"
+              >
+                <small id="wallet_bal">$0.00</small>
+                <small> 0 USDT</small>
+              </div>
+            </a>
+            <a
+              class="check"
+              onclick="window.location.href='coins/usdterc';"
+              style="
+                background-color: ghostwhite;
+                color: black;
+                width: 100%;
+                border-radius: 10px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 7px;
+                padding-bottom: 0%;
+                text-decoration: none;
+              "
+            >
+              <div style="display: flex; flex-direction: row; gap: 0.4rem">
+                <img src="../img/usdt.png" alt="" width="40" height="40" />
+                <p style="display: flex; flex-direction: column">
+                  <small style="font-weight: 900"
+                    >USDT
+                    <small style="padding: 0px 4px; background-color: beige"
+                      >Ethereum</small
+                    ></small
+                  >
+                  <small
+                    >$1.00
+                    <span id="usd-coinChange24h" class="percentage-change down"
+                      >-0.07%</span
+                    ></small
+                  >
+                </p>
+              </div>
+              <div
+                style="display: flex; flex-direction: column; align-items: end"
+              >
+                <small id="wallet_bal">$0.00</small>
+                <small> 0 USDT</small>
+              </div>
+            </a>
+            <a
+              class="check"
+              onclick="window.location.href='coins/bnb';"
+              style="
+                background-color: ghostwhite;
+                color: black;
+                width: 100%;
+                border-radius: 10px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 7px;
+                padding-bottom: 0%;
+                text-decoration: none;
+              "
+            >
+              <div style="display: flex; flex-direction: row; gap: 0.4rem">
+                <img src="../img/black-bnb.png" alt="" width="40" height="40" />
+                <p style="display: flex; flex-direction: column">
+                  <small style="font-weight: 900"
+                    >BNB
+                    <small
+                      style="padding: 0px 4px; background-color: beige"
+                    ></small
+                  ></small>
+                  <small
+                    >$606.90
+                    <span id="binancecoinChange24h" class="percentage-change up"
+                      >1.02%</span
+                    ></small
+                  >
+                </p>
+              </div>
+              <div
+                style="display: flex; flex-direction: column; align-items: end"
+              >
+                <small id="wallet_bal">$0.00</small>
+                <small> 0 BNB</small>
+              </div>
+            </a>
+            <a
+              class="check"
+              onclick="window.location.href='coins/doge';"
+              style="
+                background-color: ghostwhite;
+                color: black;
+                width: 100%;
+                border-radius: 10px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 7px;
+                padding-bottom: 0%;
+                text-decoration: none;
+              "
+            >
+              <div style="display: flex; flex-direction: row; gap: 0.4rem">
+                <img src="../img/doge.png" alt="" width="40" height="40" />
+                <p style="display: flex; flex-direction: column">
+                  <small style="font-weight: 900"
+                    >DOGE
+                    <small
+                      style="padding: 0px 4px; background-color: beige"
+                    ></small
+                  ></small>
+                  <small
+                    >$0.17
+                    <span id="dogecoinChange24h" class="percentage-change up"
+                      >0.74%</span
+                    ></small
+                  >
+                </p>
+              </div>
+              <div
+                style="display: flex; flex-direction: column; align-items: end"
+              >
+                <small id="wallet_bal">$0.00</small>
+                <small> 0 DOGE</small>
+              </div>
+            </a>
+          </section>
+
+          <script>
+            document.addEventListener('DOMContentLoaded', function () {
+              var content = document.getElementById('content')
+              content.style.display = 'flex'
+            })
+          </script>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="profile"
+          role="tabpanel"
+          aria-labelledby="profile-tab"
+        >
+          <h3>Coming Soon!!</h3>
+        </div>
+
+        <div
+          class="tab-pane fade"
+          id="contact"
+          role="tabpanel"
+          aria-labelledby="contact-tab"
+        >
+          <h3>History</h3>
+          <p>No transactions found.</p>
+        </div>
+      </div>
+    </div>
+
+    <br />
+    <br />
+    <div style="padding: 0px; margin: 0px; width: 100%">
+      <iframe
+        src="https://widget.coinlib.io/widget?type=horizontal_v2&amp;theme=dark&amp;pref_coin_id=1505&amp;invert_hover="
+        width="100%"
+        height="46px"
+        scrolling="auto"
+        marginwidth="0"
+        m4rginheight="0"
+        4
+        framecard="0"
+        card="0"
+        class="4ticky top-0"
+        style="card: 0; margin: 0; padding: 0"
+      ></iframe>
+    </div>
+    <br />
+    <br />
+    <div class="popup" id="popupMessage">
+      <p style="font-weight: 700">Swap exchange feature coming soon</p>
+    </div>
+
+    <style>
+      .footer {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+      .part1 {
+        background-color: #f3f3f3;
+        color: #493434;
+        padding: 15px;
+        text-align: center;
+        display: flex;
+        justify-content: space-around;
+      }
+    </style>
+    <footer class="footer">
+      <div class="part1">
+        <span onclick="window.location.href='dashboard';">
+          <i>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              class="bi bi-house"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L2 8.207V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V8.207l.646.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293zM13 7.207V13.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V7.207l5-5z"
+              />
+            </svg>
+          </i>
+          <small> Home </small>
+        </span>
+
+        <span onclick="window.location.href='profile';">
+          <i>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              class="bi bi-person-bounding-box"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M1.5 1a.5.5 0 0 0-.5.5v3a.5.5 0 0 1-1 0v-3A1.5 1.5 0 0 1 1.5 0h3a.5.5 0 0 1 0 1zM11 .5a.5.5 0 0 1 .5-.5h3A1.5 1.5 0 0 1 16 1.5v3a.5.5 0 0 1-1 0v-3a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 1-.5-.5M.5 11a.5.5 0 0 1 .5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 1 0 1h-3A1.5 1.5 0 0 1 0 14.5v-3a.5.5 0 0 1 .5-.5m15 0a.5.5 0 0 1 .5.5v3a1.5 1.5 0 0 1-1.5 1.5h-3a.5.5 0 0 1 0-1h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 1 .5-.5"
+              />
+              <path
+                d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm8-9a3 3 0 1 1-6 0 3 3 0 0 1 6 0"
+              />
+            </svg>
+          </i>
+          <small> Profile </small>
+        </span>
+
+        <span onclick="window.location.href='setting';">
+          <i>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              class="bi bi-person-gear"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0M8 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4m.256 7a4.5 4.5 0 0 1-.229-1.004H3c.001-.246.154-.986.832-1.664C4.484 10.68 5.711 10 8 10q.39 0 .74.025c.226-.341.496-.65.804-.918Q8.844 9.002 8 9c-5 0-6 3-6 4s1 1 1 1zm3.63-4.54c.18-.613 1.048-.613 1.229 0l.043.148a.64.64 0 0 0 .921.382l.136-.074c.561-.306 1.175.308.87.869l-.075.136a.64.64 0 0 0 .382.92l.149.045c.612.18.612 1.048 0 1.229l-.15.043a.64.64 0 0 0-.38.921l.074.136c.305.561-.309 1.175-.87.87l-.136-.075a.64.64 0 0 0-.92.382l-.045.149c-.18.612-1.048.612-1.229 0l-.043-.15a.64.64 0 0 0-.921-.38l-.136.074c-.561.305-1.175-.309-.87-.87l.075-.136a.64.64 0 0 0-.382-.92l-.148-.045c-.613-.18-.613-1.048 0-1.229l.148-.043a.64.64 0 0 0 .382-.921l-.074-.136c-.306-.561.308-1.175.869-.87l.136.075a.64.64 0 0 0 .92-.382zM14 12.5a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0"
+              />
+            </svg>
+          </i>
+          <small> Setting </small>
+        </span>
+
+        <span onclick="window.location.href='support';">
+          <i>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              class="bi bi-headset"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M8 1a5 5 0 0 0-5 5v1h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V6a6 6 0 1 1 12 0v6a2.5 2.5 0 0 1-2.5 2.5H9.366a1 1 0 0 1-.866.5h-1a1 1 0 1 1 0-2h1a1 1 0 0 1 .866.5H11.5A1.5 1.5 0 0 0 13 12h-1a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1h1V6a5 5 0 0 0-5-5"
+              />
+            </svg>
+          </i>
+          <small> Support </small>
+        </span>
+      </div>
+    </footer>
+
+    <script>
+      window.onload = function () {
+        const loader = document.getElementById('loader')
+        const content = document.getElementById('content')
+        if (content.children.length > 0) {
+          loader.style.display = 'none'
+          content.style.display = 'flex'
+        }
+      }
+    </script>
+
+    <script>
+      function openNav() {
+        document.getElementById('mySidebar').style.right = '0'
+      }
+
+      function closeNav() {
+        document.getElementById('mySidebar').style.right = '-300px'
+      }
+    </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+      document
+        .getElementById('swapButton')
+        .addEventListener('click', function () {
+          var popup = document.getElementById('popupMessage')
+          popup.classList.add('show')
+
+          setTimeout(function () {
+            popup.classList.remove('show')
+          }, 5000)
+        })
+
+      document.addEventListener('DOMContentLoaded', function () {
+        const toggleIcon = document.getElementById('toggleBalanceIcon')
+        const balanceElement = document.getElementById('totalWalletBalance')
+        const hideBalance = document.getElementById('totalWalletBalanceHide')
+
+        toggleIcon.addEventListener('click', function () {
+          if (
+            balanceElement.style.display === 'none' &&
+            hideBalance.style.display === 'block'
+          ) {
+            balanceElement.style.display = 'block'
+            hideBalance.style.display = 'none'
+            // Change icon to show eye open
+            toggleIcon.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
+                            <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z"/>
+                            <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0"/>
+                        </svg>
+                    `
+          } else {
+            hideBalance.style.display = 'block'
+            balanceElement.style.display = 'none'
+            // Change icon to show eye closed
+            toggleIcon.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye-slash" viewBox="0 0 16 16">
+                        <path d="M13.359 11.238C15.06 9.72 16 8 16 8s-3-5.5-8-5.5a7 7 0 0 0-2.79.588l.77.771A6 6 0 0 1 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755q-.247.248-.517.486z"/>
+                        <path d="M11.297 9.176a3.5 3.5 0 0 0-4.474-4.474l.823.823a2.5 2.5 0 0 1 2.829 2.829zm-2.943 1.299.822.822a3.5 3.5 0 0 1-4.474-4.474l.823.823a2.5 2.5 0 0 0 2.829 2.829"/>
+                        <path d="M3.35 5.47q-.27.24-.518.487A13 13 0 0 0 1.172 8l.195.288c.335.48.83 1.12 1.465 1.755C4.121 11.332 5.881 12.5 8 12.5c.716 0 1.39-.133 2.02-.36l.77.772A7 7 0 0 1 8 13.5C3 13.5 0 8 0 8s.939-1.721 2.641-3.238l.708.709zm10.296 8.884-12-12 .708-.708 12 12z"/>
+                    </svg>
+                    `
+          }
+        })
+      })
+    </script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>
